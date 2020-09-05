@@ -9,7 +9,7 @@ import {
 import { useDispatch } from "react-redux";
 
 import GlobalStyles from "../GlobalStyles";
-import ArtistRoute from "../artistRoute";
+import ArtistRoute from "../ArtistRoute";
 import {
   receiveAccessToken,
   requestAccessToken,
