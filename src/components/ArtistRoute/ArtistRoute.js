@@ -6,9 +6,12 @@ import {
   requestArtistProfile,
   receiveArtistProfile,
   requestArtistProfileError,
-} from "../actions";
-import { fetchArtistProfile } from "../helpers/api-helpers";
+} from "../../actions";
+import { fetchArtistProfile } from "../../helpers/api-helpers";
 
+import Header from "./Header";
+import Tags from "./Tags";
+import COLORS from "../COLORS";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const ArtistRoute = () => {
@@ -25,11 +28,15 @@ const ArtistRoute = () => {
     if (!accessToken) {
       return;
     }
-    dispatch(requestArtistProfile());
-
-    fetchArtistProfile(accessToken, id).then((json) =>
-      dispatch(receiveArtistProfile(json))
-    );
+    try {
+      dispatch(requestArtistProfile());
+      fetchArtistProfile(accessToken, id).then((json) =>
+        dispatch(receiveArtistProfile(json))
+      );
+    } catch (error) {
+      console.log(error);
+      dispatch(requestArtistProfileError());
+    }
   }, [accessToken, id]);
 
   //the status and the profile must be updated before the main render
@@ -41,15 +48,14 @@ const ArtistRoute = () => {
     );
   }
 
-  // if (!artist) {
-  //   // SOmething's gone wrong!
-  //   return "Error";
-  // }
-
   return (
     <Wrapper>
-      <h1>Hello {artist.profile.name}</h1>
-      <img src={artist.profile.images[0].url} />
+      <Header
+        picture={artist.profile.images[0].url}
+        name={artist.profile.name}
+        followers={artist.profile.followers.total}
+      />
+      <Tags genres={artist.profile.genres} />
     </Wrapper>
   );
 };
@@ -61,9 +67,15 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  background-color: ${COLORS.Charcoal};
+  overflow: hidden;
 `;
 
 const Wrapper = styled.div`
+  width: 100vw;
+  min-height: 100vh;
+  padding: 0 5vw;
   position: relative;
+  background-color: ${COLORS.Charcoal};
 `;
 export default ArtistRoute;
